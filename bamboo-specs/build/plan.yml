@@ -34,7 +34,7 @@ Job 2:
             echo hello job 2
             echo hello from job 2
             
-          conditions:
-            - variable:
-                equals:
-                  bamboo.testvar: value1
+          #conditions:
+          #  - variable:
+          #      equals:
+          #        bamboo.testvar: value1
