@@ -37,4 +37,4 @@ Job 2:
           conditions:
             - variable:
                 equals:
-                  testvar: value1
+                  bamboo.testvar: value1
