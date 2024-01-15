@@ -18,7 +18,10 @@ Job 1:
       - |
         echo hello1
         echo hello2
-        testvar=true
+        testvar=value1
+        echo $testvar
+        echo $global_var_test
+        echo $global_var_secret
         exit 1
 
 Job 2:
@@ -28,9 +31,9 @@ Job 2:
           scripts: 
           - |
             echo hello job 2
-            echo hello2
+            echo hello from job 2
             
           conditions:
             - variable:
                 equals:
-                  testvar: true
+                  testvar: value1
