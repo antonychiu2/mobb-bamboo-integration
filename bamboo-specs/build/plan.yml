@@ -8,8 +8,16 @@ stages:
   - Stage 1:
       jobs:
         - Job 1
+        - Job 2:
+            depends_on: Job 1
+            condition: failed()  # This ensures Job 2 runs only if Job 1 fails
 
 Job 1:
   tasks:
     - script:
-        - echo 'Hello from YAML Specs'
+        - echo 'Hello from Job 1'
+
+Job 2:
+  tasks:
+    - script:
+        - echo 'Hello from Job 2'
