@@ -8,16 +8,28 @@ stages:
   - Stage 1:
       jobs:
         - Job 1
-        - Job 2:
-            depends_on: Job 1
-            condition: failed()  # This ensures Job 2 runs only if Job 1 fails
+        - Job 2
 
 Job 1:
   tasks:
-    - script:
-        - echo 'Hello from Job 1'
+  - script:
+      interpreter: SHELL
+      scripts: 
+      - |
+        echo hello1
+        echo hello2
+        testvar=true
 
 Job 2:
   tasks:
     - script:
-        - echo 'Hello from Job 2'
+          interpreter: SHELL
+          scripts: 
+          - |
+            echo hello job 2
+            echo hello2
+            
+          conditions:
+            - variable:
+                equals:
+                  testvar: true
