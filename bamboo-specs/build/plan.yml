@@ -18,10 +18,11 @@ Job 1:
       - |
         echo hello1
         echo hello2
+        env
         testvar=value1
         echo $testvar
-        echo $global_var_test
-        echo $global_var_secret
+        echo ${bamboo.global_var_test}
+        echo ${bamboo.global_var_secret}
         exit 1
 
 Job 2:
