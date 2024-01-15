@@ -20,7 +20,7 @@ Job 1:
         echo hello2
         
         testvar=value1
-        echo "myvar=$testvar" >> build/env_variables.properties
+        echo "myvar=$testvar" >> env_variables.properties
         echo $testvar
         echo ${bamboo.global_var_test}
         echo ${bamboo.global_var_secret}
