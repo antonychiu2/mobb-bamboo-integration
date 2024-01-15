@@ -19,6 +19,7 @@ Job 1:
         echo hello1
         echo hello2
         testvar=true
+        exit 1
 
 Job 2:
   tasks:
