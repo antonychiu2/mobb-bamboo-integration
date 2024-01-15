@@ -18,15 +18,19 @@ Job 1:
       - |
         echo hello1
         echo hello2
-        env
+        
         testvar=value1
+        echo "myvar=$testvar" >> build/env_variables.properties
         echo $testvar
         echo ${bamboo.global_var_test}
         echo ${bamboo.global_var_secret}
+
+        env
         exit 1
 
 Job 2:
   tasks:
+    - inject-variables: env_variables.properties
     - script:
           interpreter: SHELL
           scripts: 
