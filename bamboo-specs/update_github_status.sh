@@ -18,7 +18,7 @@ CONTEXT=$8
 
 
 # Construct the curl command
-curl -X POST \
+curl -s -X POST \
   -H "Content-Type: application/json" \
   -H "Accept: application/vnd.github+json" \
   -H "X-GitHub-Api-Version: 2022-11-28" \
