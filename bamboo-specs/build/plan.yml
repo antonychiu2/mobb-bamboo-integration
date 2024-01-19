@@ -1,46 +1,113 @@
+---
 version: 2
 plan:
   project-key: MOB
-  key: PLAN
-  name: My Plan
-
+  key: MOB
+  name: Mobb-Demo-Plan
 stages:
-  - Stage 1:
-      jobs:
-        - Job 1
-        - Job 2
-
-Job 1:
+- Default Stage:
+    manual: false
+    final: false
+    jobs:
+    - SAST-Mobb-Autofixer
+SAST-Mobb-Autofixer:
+  key: JOB1
+  description: Run SAST Scan, if issues are found, run Mobb Autofixer to auto fix all issues.
   tasks:
+  - checkout:
+      force-clean-build: false
+      description: Checkout Default Repository
   - script:
       interpreter: SHELL
-      scripts: 
-      - |
-        echo hello1
-        echo hello2
-        
-        testvar=value1
-        echo "myvar=$testvar" >> env_variables.properties
-        ls -lah
-        echo $testvar
-        echo ${bamboo.global_var_test}
-        echo ${bamboo.global_var_secret}
-
+      scripts:
+      - |-
+        ls -lR
         env
-        exit 1
+        chmod +x ./bamboo-specs/update_github_status.sh
+        ./bamboo-specs/update_github_status.sh $bamboo_GITHUB_PAT_SECRET $bamboo_planRepository_username $bamboo_planRepository_name $bamboo_planRepository_revision "pending" $bamboo_buildResultsUrl "Bamboo job has started" "continuous-integration/bamboo"
+      description: Notify Github on the start of the job
+  - script:
+      interpreter: BINSH_OR_CMDEXE
+      scripts:
+      - |-
+        echo "test"
 
-Job 2:
-  tasks:
-    - inject-variables: env_variables.properties
-    - script:
-          interpreter: SHELL
-          scripts: 
-          - |
-            env
-            echo hello job 2
-            echo hello from job 2
-            
-          #conditions:
-          #  - variable:
-          #      equals:
-          #        bamboo.testvar: value1
+        ./bamboo-specs/update_github_status.sh $bamboo_GITHUB_PAT_SECRET $bamboo_planRepository_username $bamboo_planRepository_name $bamboo_planRepository_revision "pending" $bamboo_buildResultsUrl "Snyk Scan Started" "continuous-integration/bamboo/snyk"
+
+        npx snyk auth $bamboo_SNYK_API_SECRET
+        issues_found=false
+        npx snyk code test --sarif-file-output=report.json
+        exit_code=$?
+        if [ $exit_code -eq 0 ]; then
+            echo "(Success) Snyk completed with exit code $exit_code."
+            ./bamboo-specs/update_github_status.sh $bamboo_GITHUB_PAT_SECRET $bamboo_planRepository_username $bamboo_planRepository_name $bamboo_planRepository_revision "success" $bamboo_buildResultsUrl "Snyk Scan Complete - No issues found!" "continuous-integration/bamboo/snyk"
+        else
+            echo "(Failure) Snyk completed with exit code $exit_code."
+            ./bamboo-specs/update_github_status.sh $bamboo_GITHUB_PAT_SECRET $bamboo_planRepository_username $bamboo_planRepository_name $bamboo_planRepository_revision "failure" $bamboo_buildResultsUrl "Snyk Scan Failed - Vulnerabilities found!" "continuous-integration/bamboo/snyk"
+            issues_found=true
+        fi
+        echo "Issue found: $issues_found"
+        echo "issues_found=$issues_found" >> status.properties
+        exit $exit_code
+      description: SAST scan
+  final-tasks:
+  - inject-variables:
+      file: status.properties
+      scope: RESULT
+      namespace: inject
+      description: Load SAST scan status
+  - script:
+      interpreter: SHELL
+      scripts:
+      - "GITHUBURL=$(echo $bamboo_repository_git_repositoryUrl | sed -E 's|(https://github.com/[^/]+/[^/]+).git|\\1|') \nenv\nls -lah\necho \"Github URL is: $GITHUBURL\"\n#npx mobbdev@latest analyze -f report.json -r $GITHUBURL --ref $bamboo_planRepository_branchName --api-key $bamboo_MOBB_API_SECRET --ci\nMOBBURL=$(npx mobbdev@latest analyze -f report.json -r $GITHUBURL --ref $bamboo_planRepository_branchName --api-key $bamboo_MOBB_API_SECRET --ci)\necho \"Mobb URL: $MOBBURL\"\n./bamboo-specs/update_github_status.sh $bamboo_GITHUB_PAT_SECRET $bamboo_planRepository_username $bamboo_planRepository_name $bamboo_planRepository_revision \"success\" $MOBBURL \"Click on \\\\\\\"Details\\\\\\\" to access the Mobb Fix Link\" \"Mobb Fix Link\""
+      conditions:
+      - variable:
+          equals:
+            bamboo.inject.issues_found: 'true'
+      description: Mobb
+  - script:
+      interpreter: SHELL
+      scripts:
+      - ./bamboo-specs/update_github_status.sh $bamboo_GITHUB_PAT_SECRET $bamboo_planRepository_username $bamboo_planRepository_name $bamboo_planRepository_revision "success" $bamboo_buildResultsUrl "Bamboo job is complete" "continuous-integration/bamboo"
+      description: Notify GitHub on the end of the job
+  artifact-subscriptions: []
+repositories:
+- mobb-bamboo-integration:
+    scope: global
+triggers:
+- polling:
+    period: '180'
+- remote:
+    description: test
+branches:
+  create:
+    for-pull-request:
+      accept-fork: true
+  delete:
+    after-deleted-days: 7
+    after-inactive-days: 30
+  link-to-jira: false
+notifications: []
+labels: []
+dependencies:
+  require-all-stages-passing: false
+  enabled-for-branches: true
+  block-strategy: none
+  plans: []
+other:
+  concurrent-build-plugin: system-default
+---
+version: 2
+plan:
+  key: MOB-MOB
+plan-permissions:
+- users:
+  - bamboo
+  permissions:
+  - view
+  - edit
+  - build
+  - clone
+  - admin
+  - view-configuration
+...
