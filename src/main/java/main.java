@@ -13,6 +13,7 @@ public class SQLInjectionExample extends HttpServlet {
             String user = request.getParameter("username");
 
             String query = "SELECT * FROM users WHERE username2 = '" + user + "';";
+            
             Statement stmt = con.createStatement();
 
             stmt.executeQuery(query);
