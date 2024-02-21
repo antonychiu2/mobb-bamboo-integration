@@ -31,7 +31,7 @@ After logging into the Mobb portal, click on the "Settings" icon on the bottom l
 
 To integrate with Snyk, you  will also need to generate a Snyk API Key. This can be achieved by following this [guide](https://docs.snyk.io/snyk-api/authentication-for-api) from Snyk documentation. 
 
-## Loading Credentials into the CircleCI Project
+## Loading Credentials into the Bamboo Project
 
 At this point, we should have 3 API keys ready: 
 * GitHub Personal Access Token (PAT)
