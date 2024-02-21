@@ -195,7 +195,7 @@ As the last step, enter the name of the target branch where this pull request wi
 
 Mobb has successfully committed the remediated code back to your repository under a new branch along with a new Pull Request. Since this pipeline is configured to run on every Pull Request events, a new SAST scan will be conducted to validate the proposed changes to ensure the vulnerabilities have been remediated.
 
-<img src="https://github.com/antonychiu2/mobb-circleci-integration/assets/5158535/a1cac70d-cffc-4e29-a8d3-59bd38ca0820" width=70% height=70%>
+<img src="https://github.com/antonychiu2/mobb-bamboo-integration/assets/5158535/47250fc6-09c7-4317-a7f3-1a2c56eab758" width=70% height=70%>
 
 
 
