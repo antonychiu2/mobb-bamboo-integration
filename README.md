@@ -12,9 +12,9 @@ To perform this integration, you will need the following:
 * Sign up for a free CircleCI Account https://circleci.com/signup/
 * Access to a GitHub repository to perform this integration
 
-## GitHub Personal Access Token (PAT)
+## (Optional) GitHub Personal Access Token (PAT)
 
-The first step is to generate a GitHub Personal Access Token (PAT). You can generate one by clicking on your profile -> Settings -> Developer Settings -> Personal Access Tokens -> Fine-grained tokens. 
+This step is required if you want to publish the Bamboo build progress as well as the dedicated Mobb Fix LInk back into the GitHub Pull Request page. To generate a GitHub Personal Access Token (PAT)click on your GitHub profile icon -> Settings -> Developer Settings -> Personal Access Tokens -> Fine-grained tokens. 
 
 For this integration, we need to provide the following permissions: 
 
@@ -48,15 +48,10 @@ MOBB_API_SECRET
 SNYK_API_SECRET
 ```
 
-## Optional - Build only pull requests
-
-By default, CircleCI will build all the commits in the project. However, you may want to only build branches that have associated pull requests open. If you only want the build to run when there is a pull request, make sure to go to "Project Settings" -> "Advanced" and enable "Only build pull requests". 
-
-<img src="https://github.com/antonychiu2/mobb-circleci-integration/assets/5158535/0e6bb3a8-ff22-4896-bb4a-7a5a260a8328" width=80% height=80%>
 
 ## Bamboo Specs (.yml)
 
-In this demo, we are checking in the build script into the source code repository under the path `.circleci/config.yml`. Here is a sample `yaml` script for your reference:
+In this demo, we are checking in the build script into the source code repository under the path `./bamboo-specs/build/plan.yml`. Here is a sample `yaml` script for your reference:
 
 ``` yaml
 version: 2
@@ -165,14 +160,20 @@ other:
   concurrent-build-plugin: system-default
 
 ```
+This is referenced by `bamboo-specs/bamboo.yml` which contains the following:
+
+```yaml
+!include 'build/plan.yml'
+```
+
 
 ## Triggering the pipeline
 
-The CircleCI job will run when a pull request is detected in the GitHub Source Code repository that it is connected with. To test this, go to your GitHub and trigger a Pull Request by making some updates to your source code in a new branch. 
+The Bamboo build pipeline will run when a new commit is detected in the GitHub Source Code repository that it is connected with. To test this, go to your GitHub Repository and trigger a Pull Request by making an update to your source code in a new branch. 
 
 <img src="https://github.com/antonychiu2/jenkins-mobb-integration/assets/5158535/171bad00-c5c0-4bb1-89c5-fc291e63d3b8" width=70% height=70%>
 
-Once the Pull Request is initiated, the job in CircleCI will initiate. 
+Once the Pull Request is initiated, the build pipeline in Bamboo will initiate. 
 
 If vulnerabilities are found by the SAST scanner, Mobb will also run to consume the results of the SAST scan. Once the analysis is ready, a URL to the Mobb dashboard will be provided via the "Details" button. 
 
@@ -188,7 +189,7 @@ Once you're ready, select the "Commit Changes" button.
 
 <img src="https://github.com/antonychiu2/mobb-circleci-integration/assets/5158535/9e7203c0-3912-437f-840e-b78a135f8336" width=90% height=90%>
 
-As the last step, enter the name of the target branch where this merge request will be merged. And select "Commit Changes".
+As the last step, enter the name of the target branch where this pull request will be merged, then select "Commit Changes".
 
 <img src="https://github.com/antonychiu2/jenkins-mobb-integration/assets/5158535/03544f61-681c-4b21-8566-fcd4739afa06" width=70% height=70%>
 
