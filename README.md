@@ -177,17 +177,17 @@ Once the Pull Request is initiated, the build pipeline in Bamboo will initiate.
 
 If vulnerabilities are found by the SAST scanner, Mobb will also run to consume the results of the SAST scan. Once the analysis is ready, a URL to the Mobb dashboard will be provided via the "Details" button. 
 
-<img src="https://github.com/antonychiu2/mobb-circleci-integration/assets/5158535/c4478a69-6c22-4c49-8175-0ad373b1d2a7" width=70% height=70%>
+<img src="https://github.com/antonychiu2/mobb-bamboo-integration/assets/5158535/c40f2e9e-114d-4389-93b1-221fd31c9646" width=70% height=70%>
 
-Once we arrive at the analysis page for the project, we can see a list of available fixes. Let's click on the "Link to Fix" button next to the XSS finding.
+Once we arrive at the analysis page for the project, we can see a list of available fixes. Let's click on the "Link to Fix" button next to the SQLi finding.
 
-<img src="https://github.com/antonychiu2/mobb-circleci-integration/assets/5158535/052c17bf-c669-43de-bd74-a98a46d7a651" width=90% height=90%>
+<img src="https://github.com/antonychiu2/mobb-bamboo-integration/assets/5158535/1edbe5a1-db64-4365-9c05-f378ad010d56" width=90% height=90%>
 
 Mobb provides a powerful self-guided remediation engine. As a developer, all you have to do is answer a few questions and validate the fix that Mobb is proposing. From there, Mobb will take over the remediation process and commit the code on your behalf.
 
 Once you're ready, select the "Commit Changes" button.
 
-<img src="https://github.com/antonychiu2/mobb-circleci-integration/assets/5158535/9e7203c0-3912-437f-840e-b78a135f8336" width=90% height=90%>
+<img src="https://github.com/antonychiu2/mobb-bamboo-integration/assets/5158535/fe93e5be-88e4-49e8-a3f3-143d9faaac7f" width=90% height=90%>
 
 As the last step, enter the name of the target branch where this pull request will be merged, then select "Commit Changes".
 
