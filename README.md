@@ -9,7 +9,7 @@ To perform this integration, you will need the following:
 
 * Sign up for a free account at https://mobb.ai
 * Sign up for a free Snyk Account https://snyk.io 
-* Sign up for a free CircleCI Account https://circleci.com/signup/
+* Access to a Atlassian Bamboo environment
 * Access to a GitHub repository to perform this integration
 
 ## (Optional) GitHub Personal Access Token (PAT)
